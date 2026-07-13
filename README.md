@@ -2,7 +2,6 @@
 
 A state-of-the-art, interactive, clinical-grade medical Augmented Reality (WebAR) dashboard demonstrating human heart anatomy, cardiac hemodynamics (blood flow), and pathology simulations. Built using pure front-end WebGL technologies (Three.js and MindAR) with complete responsive browser support.
 
-![CardioSense Logo Placeholder](https://via.placeholder.com/800x400/030c17/00f2fe?text=CardioSense+AR+Medical+Dashboard)
 
 ---
 
