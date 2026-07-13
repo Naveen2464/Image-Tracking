@@ -1,0 +1,503 @@
+/* ==========================================================================
+   CARDIOSENSE AR - SIMPLIFIED INTERFACE STYLESHEET
+   ========================================================================== */
+
+/* AR Viewport Frame */
+.ar-viewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+}
+
+/* Glassmorphism Panel Base */
+.glass {
+    background: var(--bg-glass);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    border: 1px solid var(--border-glass);
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    color: var(--text-primary);
+    transition: border var(--transition-smooth), background-color var(--transition-smooth);
+}
+
+/* Main UI overlay layer */
+.app-ui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 16px;
+}
+
+.app-ui > * {
+    pointer-events: auto;
+}
+
+/* Header Panel with diagnostics telemetry */
+.app-header {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 16px;
+    margin-bottom: auto;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.app-title {
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+.app-title .highlight {
+    color: var(--cyan);
+}
+
+.pulse-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-pulse {
+    animation: statusBreathing 1.5s infinite ease-in-out;
+    box-shadow: 0 0 6px currentColor;
+}
+
+.diagnostics-panel {
+    display: flex;
+    gap: 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.diag-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.diag-item .label {
+    color: var(--text-secondary);
+}
+
+.status-pill {
+    padding: 2px 6px;
+    border-radius: 12px;
+    background: rgba(var(--red-rgb), 0.15);
+    border: 1px solid rgba(var(--red-rgb), 0.3);
+}
+
+.status-pill.tracking-active {
+    background: rgba(var(--green-rgb), 0.15);
+    border: 1px solid rgba(var(--green-rgb), 0.3);
+    color: var(--green) !important;
+}
+
+.status-pill.tracking-sim {
+    background: rgba(var(--cyan-rgb), 0.15);
+    border: 1px solid rgba(var(--cyan-rgb), 0.3);
+    color: var(--cyan) !important;
+}
+
+/* Bottom Action Toolbar Overlay */
+.toolbar-overlay {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+}
+
+.toolbar {
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+}
+
+/* Buttons */
+.btn {
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-cyan {
+    background: rgba(var(--cyan-rgb), 0.1);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+}
+
+.btn-cyan:hover {
+    background: var(--cyan);
+    color: var(--bg-app);
+}
+
+.btn-primary {
+    background: var(--cyan);
+    color: var(--bg-app);
+    border: 1px solid var(--cyan);
+}
+
+.btn-primary:hover {
+    background: transparent;
+    color: var(--cyan);
+    box-shadow: 0 0 10px rgba(var(--cyan-rgb), 0.3);
+}
+
+.btn-wide {
+    width: 100%;
+}
+
+.btn-icon-round {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(var(--cyan-rgb), 0.05);
+    border: 1px solid var(--border-glass);
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.btn-icon-round:hover {
+    border-color: var(--border-glass-focus);
+    background: rgba(var(--cyan-rgb), 0.1);
+    color: var(--cyan);
+}
+
+/* Bottom Center Target Tracking Instructions */
+.guide-banner {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.guide-icon {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.guide-message {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Modals & Loaders Shell */
+.loader-screen, .error-screen, .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(2, 8, 19, 0.75);
+    backdrop-filter: blur(6px);
+}
+
+.loader-screen {
+    background: var(--bg-app);
+}
+
+.loader-card, .error-card, .modal-content {
+    position: relative;
+    max-width: 400px;
+    width: 100%;
+    padding: 24px;
+    border-radius: 16px;
+    z-index: 10;
+}
+
+/* Loading Icon heartbeat */
+.heart-loading-animation {
+    color: var(--red);
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 12px;
+    animation: heartBeatScale 1.2s infinite ease-in-out;
+}
+
+.loading-heart-svg {
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 0 6px rgba(var(--red-rgb), 0.4));
+}
+
+.loader-title {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 2px;
+}
+
+.loader-subtitle {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+}
+
+/* Progress bars */
+.progress-bar-container {
+    width: 100%;
+    height: 4px;
+    background: var(--bg-glass-inner);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--blue), var(--cyan));
+    transition: width 0.2s ease;
+}
+
+.progress-percentage-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+/* Modals */
+.btn-close-modal {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.3rem;
+    cursor: pointer;
+}
+
+.btn-close-modal:hover {
+    color: var(--red);
+}
+
+.modal-title {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+}
+
+.modal-subtitle {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: 16px;
+}
+
+.target-img-frame {
+    width: 100%;
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
+    border: 1px solid var(--border-glass);
+}
+
+.target-image {
+    max-width: 100%;
+    max-height: 140px;
+    height: auto;
+    object-fit: contain;
+}
+
+/* Camera Errors */
+.error-icon-box {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    color: var(--text-primary);
+    box-shadow: 0 0 15px rgba(var(--red-rgb), 0.25);
+}
+
+.error-message {
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--text-secondary);
+    margin: 8px 0 16px;
+}
+
+.error-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Responsive layout adjustments */
+@media (max-width: 600px) {
+    .app-ui {
+        padding: 8px;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    
+    .app-header {
+        max-width: 100%;
+    }
+
+    .toolbar-overlay {
+        bottom: 8px;
+        right: 8px;
+        left: 8px;
+    }
+    
+    .toolbar {
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .guide-banner {
+        bottom: 60px;
+        left: 8px;
+        right: 8px;
+        width: calc(100% - 16px);
+        justify-content: center;
+    }
+}
+
+/* Billboard HTML 3D Projection Labels Layer */
+.annotations-overlay-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+    overflow: hidden;
+}
+
+/* Individual Anatomy Billboard Labels */
+.ar-billboard-label {
+    position: absolute;
+    pointer-events: auto;
+    transform: translate(-50%, -100%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 10;
+}
+
+.label-bubble {
+    background: rgba(3, 12, 23, 0.85);
+    border: 1px solid var(--border-glass);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Small indicator dot in label */
+.label-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.label-pointer-line {
+    width: 1px;
+    height: 15px;
+    background: linear-gradient(to top, var(--border-glass), transparent);
+    margin: 0 auto;
+}
+
+/* Part Isolation Study Panel */
+.isolation-hud {
+    position: absolute;
+    left: 20px;
+    top: 90px;
+    width: 320px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    pointer-events: auto;
+    z-index: 150;
+}
+
+.isolation-header {
+    display: flex;
+    flex-direction: column;
+}
+
+.isolation-header h2 {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-top: 4px;
+}
+
+/* Responsive adjustment for Isolation Panel */
+@media (max-width: 600px) {
+    .isolation-hud {
+        left: 8px;
+        right: 8px;
+        width: calc(100% - 16px);
+        top: 65px;
+        bottom: auto;
+        padding: 12px;
+        gap: 8px;
+    }
+}
+
+

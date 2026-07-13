@@ -1,0 +1,172 @@
+/* ==========================================================================
+   CARDIOSENSE AR - GLOBAL STYLESHEET
+   ========================================================================== */
+
+/* Design Tokens & Theme Variables */
+:root {
+    --font-heading: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+
+    /* Theme-agnostic UI Colors */
+    --cyan: #00f2fe;
+    --cyan-rgb: 0, 242, 254;
+    --blue: #0077b6;
+    --blue-rgb: 0, 119, 182;
+    --red: #ff3860;
+    --red-rgb: 255, 56, 96;
+    --amber: #ffb020;
+    --amber-rgb: 255, 176, 32;
+    --green: #23d160;
+    --green-rgb: 35, 209, 96;
+    
+    /* Animation Speeds */
+    --beat-duration: 0.833s; /* ~72 BPM default */
+    --transition-smooth: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Dark Mode (Default) Configuration */
+body.theme-dark {
+    --bg-app: #020813;
+    --bg-glass: rgba(6, 17, 33, 0.7);
+    --bg-glass-inner: rgba(12, 34, 64, 0.45);
+    --text-primary: #f0f7ff;
+    --text-secondary: #8da2bd;
+    --text-muted: #5b718f;
+    --border-glass: rgba(0, 242, 254, 0.15);
+    --border-glass-focus: rgba(0, 242, 254, 0.4);
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --glow-effect: rgba(0, 242, 254, 0.2);
+    --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Light Mode Configuration */
+body.theme-light {
+    --bg-app: #f4f8fc;
+    --bg-glass: rgba(255, 255, 255, 0.8);
+    --bg-glass-inner: rgba(230, 241, 255, 0.75);
+    --text-primary: #0a1727;
+    --text-secondary: #4a5c75;
+    --text-muted: #8294ad;
+    --border-glass: rgba(0, 119, 182, 0.15);
+    --border-glass-focus: rgba(0, 119, 182, 0.4);
+    --shadow-color: rgba(10, 23, 39, 0.08);
+    --glow-effect: rgba(0, 119, 182, 0.1);
+    --card-shadow: 0 8px 32px 0 rgba(10, 23, 39, 0.08);
+}
+
+/* CSS Resets & Box-sizing */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font-body);
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    touch-action: manipulation;
+}
+
+/* Scrollbar customization for clinical look */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-glass);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--border-glass-focus);
+}
+
+/* Utility Animations */
+@keyframes heartBeatScale {
+    0% { transform: scale(1); }
+    14% { transform: scale(1.12); }
+    28% { transform: scale(1); }
+    42% { transform: scale(1.15); }
+    70% { transform: scale(1); }
+    100% { transform: scale(1); }
+}
+
+@keyframes beatGlow {
+    0%, 100% { box-shadow: 0 0 10px rgba(var(--cyan-rgb), 0.2); }
+    30% { box-shadow: 0 0 25px rgba(var(--cyan-rgb), 0.6); }
+}
+
+@keyframes statusBreathing {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}
+
+@keyframes voiceWave {
+    0%, 100% { height: 4px; }
+    50% { height: 18px; }
+}
+
+@keyframes scanLine {
+    0% { top: 0%; }
+    50% { top: 100%; }
+    100% { top: 0%; }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.92); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* Helper Utility Classes */
+.animate-fade-in {
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-scale-in {
+    animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.text-cyan { color: var(--cyan); }
+.text-red { color: var(--red); }
+.text-amber { color: var(--amber); }
+.text-green { color: var(--green); }
+.text-muted { color: var(--text-muted); }
+
+.bg-cyan { background-color: var(--cyan); }
+.bg-red { background-color: var(--red); }
+.bg-amber { background-color: var(--amber); }
+.bg-green { background-color: var(--green); }
+
+.text-center { text-align: center; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-4 { margin-bottom: 1rem; }
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}

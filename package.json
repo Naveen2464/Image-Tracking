@@ -1,0 +1,13 @@
+{
+  "name": "cardiosense-ar",
+  "version": "1.0.0",
+  "description": "3D Heart Anatomy WebAR Tracker System",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx http-server -c-1 -S -K key.pem -C cert.pem -p 8443",
+    "start": "npx http-server -c-1 -S -K key.pem -C cert.pem -p 8443"
+  },
+  "dependencies": {
+    "http-server": "^14.1.1"
+  }
+}

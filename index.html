@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>3D Heart WebAR Tracker</title>
+    <meta name="description" content="A lightweight, high-performance WebAR 3D Heart Anatomy Image Tracking System built with Three.js and MindAR.">
+    
+    <!-- Favicon (Inline SVG to prevent 404 logs) -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>❤️</text></svg>">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/ui.css">
+
+    <!-- CDNs Import Map -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+                "mindar-image-three": "https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"
+            }
+        }
+    </script>
+</head>
+<body class="theme-dark">
+    <!-- Camera Viewport -->
+    <div id="ar-container" class="ar-viewport"></div>
+
+    <!-- UI Overlay Layer -->
+    <main id="app-overlay" class="app-ui">
+        
+        <!-- Header: Diagnostic Telemetry -->
+        <header class="app-header glass">
+            <div class="logo-container">
+                <div class="pulse-indicator status-pulse bg-cyan" id="status-pulse-dot"></div>
+                <h1 class="app-title">CARDIOSENSE <span class="highlight">AR</span></h1>
+            </div>
+            
+            <div class="diagnostics-panel">
+                <div class="diag-item">
+                    <span class="label">FPS:</span>
+                    <span id="fps-counter" class="value text-cyan">60</span>
+                </div>
+                <div class="diag-item">
+                    <span class="label">TRACKING:</span>
+                    <span id="tracking-status" class="value status-pill text-red">INITIALIZING</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Utility Toolbar (Bottom Right) -->
+        <section class="toolbar-overlay">
+            <div class="toolbar glass">
+                <button id="btn-theme-toggle" class="btn btn-icon-round" aria-label="Toggle Light/Dark Theme">
+                    <svg id="theme-icon-sun" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                    <svg id="theme-icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                </button>
+                <button id="btn-fullscreen" class="btn btn-icon-round" aria-label="Toggle Fullscreen">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                </button>
+                <button id="btn-speech-toggle" class="btn btn-icon-round" aria-label="Toggle Speech Assistant">
+                    <svg id="speech-icon-on" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    <svg id="speech-icon-off" class="hidden" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line></svg>
+                </button>
+                <button id="btn-screenshot" class="btn btn-icon-round" aria-label="Capture Screenshot">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                </button>
+                <button id="btn-show-target" class="btn btn-primary" aria-label="Display Image Target to Scan">
+                    Target Image
+                </button>
+            </div>
+        </section>
+
+        <!-- Dynamic AR Action Guide (Bottom Center) -->
+        <div id="ar-interaction-guide" class="guide-banner glass animate-fade-in">
+            <span class="guide-icon pulse-indicator bg-amber"></span>
+            <p id="guide-text" class="guide-message">Starting components...</p>
+        </div>
+        
+        <!-- Part Isolation Study View Overlay (Initially Hidden) -->
+        <div id="isolation-overlay" class="isolation-hud hidden glass animate-fade-in">
+            <div class="isolation-header">
+                <span class="category-tag text-cyan">Isolated Anatomical Study</span>
+                <h2 id="isolated-part-title">Structure Isolation</h2>
+                <p class="small text-muted" style="margin-top: 6px; font-size: 0.75rem;">Viewing this structure in isolation. Drag to rotate and zoom to inspect details.</p>
+            </div>
+            <button id="btn-exit-isolation" class="btn btn-primary btn-wide" style="margin-top: 16px;">
+                Exit Isolation Mode
+            </button>
+        </div>
+
+        <!-- 3D Anatomical Label Layer Container -->
+        <div id="labels-container" class="annotations-overlay-layer"></div>
+    </main>
+
+    <!-- LOADING SCREEN -->
+    <div id="loader-overlay" class="loader-screen">
+        <div class="loader-card glass text-center">
+            <div class="heart-loading-animation">
+                <svg viewBox="0 0 32 32" class="loading-heart-svg">
+                    <path d="M16 28.5S2 20.2 2 10.8C2 5.3 6.3 1 11.5 1c3.1 0 5.8 1.5 7.5 3.9C20.7 2.5 23.4 1 26.5 1 31.7 1 36 5.3 36 10.8c0 9.4-14 17.7-14 17.7z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                </svg>
+            </div>
+            <h2 class="loader-title">CardioSense AR</h2>
+            <p class="loader-subtitle">Loading WebGL Scene...</p>
+            <div class="progress-bar-container">
+                <div id="progress-bar-fill" class="progress-bar-fill" style="width: 0%;"></div>
+            </div>
+            <span id="progress-text" class="progress-percentage-label">0%</span>
+        </div>
+    </div>
+
+    <!-- TARGET IMAGE MODAL -->
+    <div id="target-modal" class="modal hidden">
+        <div class="modal-overlay" id="target-modal-overlay"></div>
+        <div class="modal-content glass animate-scale-in">
+            <button id="btn-close-target" class="btn-close-modal" aria-label="Close Modal">&times;</button>
+            <h3 class="modal-title">AR Tracking Target Card</h3>
+            <p class="modal-subtitle">Scan this card with your camera to view the 3D heart, or run Simulator mode.</p>
+            <div class="target-img-frame">
+                <img id="target-display-img" src="assets/card.png" alt="Reference Target" class="target-image">
+            </div>
+            <div class="target-actions text-center">
+                <button id="btn-sim-fallback" class="btn btn-cyan btn-wide">Enter Simulator Mode</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CAMERA PERMISSION ERROR -->
+    <div id="permission-error-screen" class="error-screen hidden">
+        <div class="error-card glass text-center">
+            <div class="error-icon-box bg-red">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+            </div>
+            <h2 class="text-red">Camera Permission Required</h2>
+            <p class="error-message">WebAR requires camera access to recognize target cards. Enable camera access in settings, or bypass to Simulator mode.</p>
+            <div class="error-actions">
+                <button id="btn-retry-permission" class="btn btn-primary">Retry Camera Connection</button>
+                <button id="btn-bypass-to-sim" class="btn btn-cyan">Use Simulator Mode</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Entry Script -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
