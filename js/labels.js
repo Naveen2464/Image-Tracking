@@ -4,6 +4,8 @@
 
 import * as THREE from 'three';
 
+
+
 /**
  * Projects 3D heart coordinates to 2D HTML/CSS labels
  */
@@ -48,19 +50,43 @@ export class AnatomyLabels {
                 const element = this.createLabelDOM(partKey, displayName);
                 this.container.appendChild(element);
 
+                // Determine category stroke color matching the label dots
+                let strokeColor = '#00f2fe'; // Cyan (default deoxygenated)
+                if (partKey.includes('aorta') || partKey.includes('left_ventricle') || partKey.includes('left_atrium') || partKey.includes('pulmonary_vein')) {
+                    strokeColor = '#ff3860'; // Red (oxygenated)
+                } else if (partKey.includes('valve')) {
+                    strokeColor = '#ffb020'; // Amber (valves)
+                }
+
                 // Create SVG line element for dynamic connection
                 const lineElement = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                lineElement.setAttribute("stroke", "rgba(0, 242, 254, 0.4)");
-                lineElement.setAttribute("stroke-width", "1.5");
-                lineElement.setAttribute("stroke-dasharray", "3,3");
+                lineElement.setAttribute("stroke", strokeColor);
+                lineElement.setAttribute("stroke-width", "1.0");
                 this.svgContainer.appendChild(lineElement);
+
+                // Create SVG outer glow circle for anchor point on heart
+                const glowCircleElement = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                glowCircleElement.setAttribute("fill", strokeColor);
+                glowCircleElement.setAttribute("r", "4.0");
+                glowCircleElement.setAttribute("opacity", "0");
+                this.svgContainer.appendChild(glowCircleElement);
+
+                // Create SVG inner solid circle for anchor point on heart
+                const anchorDotElement = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                anchorDotElement.setAttribute("fill", strokeColor);
+                anchorDotElement.setAttribute("r", "1.8");
+                anchorDotElement.setAttribute("opacity", "0");
+                this.svgContainer.appendChild(anchorDotElement);
 
                 this.labels.push({
                     element: element,
                     object3d: child,
                     anchorOffset: anchorOffset,
                     partKey: partKey,
-                    lineElement: lineElement
+                    lineElement: lineElement,
+                    glowCircleElement: glowCircleElement,
+                    anchorDotElement: anchorDotElement,
+                    strokeColor: strokeColor
                 });
             }
         });
@@ -85,13 +111,18 @@ export class AnatomyLabels {
             </div>
         `;
 
-        // Bind click handler to trigger isolation study mode
-        div.querySelector('.label-bubble').addEventListener('click', (e) => {
+        // Bind click & touch handlers to trigger isolation study mode responsive on mobile
+        const handleInteraction = (e) => {
+            e.preventDefault();
             e.stopPropagation();
             if (this.onClickCallback) {
                 this.onClickCallback(partKey);
             }
-        });
+        };
+
+        const bubble = div.querySelector('.label-bubble');
+        bubble.addEventListener('click', handleInteraction);
+        bubble.addEventListener('touchend', handleInteraction);
 
         return div;
     }
@@ -102,9 +133,13 @@ export class AnatomyLabels {
             if (label.partKey !== partKey) {
                 label.element.classList.add('hidden');
                 if (label.lineElement) label.lineElement.setAttribute("display", "none");
+                if (label.glowCircleElement) label.glowCircleElement.setAttribute("display", "none");
+                if (label.anchorDotElement) label.anchorDotElement.setAttribute("display", "none");
             } else {
                 label.element.classList.remove('hidden');
                 if (label.lineElement) label.lineElement.setAttribute("display", "inline");
+                if (label.glowCircleElement) label.glowCircleElement.setAttribute("display", "inline");
+                if (label.anchorDotElement) label.anchorDotElement.setAttribute("display", "inline");
             }
         });
     }
@@ -114,6 +149,28 @@ export class AnatomyLabels {
         this.labels.forEach((label) => {
             label.element.classList.remove('hidden');
             if (label.lineElement) label.lineElement.setAttribute("display", "inline");
+            if (label.glowCircleElement) label.glowCircleElement.setAttribute("display", "inline");
+            if (label.anchorDotElement) label.anchorDotElement.setAttribute("display", "inline");
+        });
+    }
+
+    updateIsolatedAnchor(partKey, newAnchor) {
+        this.labels.forEach((label) => {
+            if (label.partKey === partKey) {
+                if (!label.originalObject3d) {
+                    label.originalObject3d = label.object3d;
+                }
+                label.object3d = newAnchor;
+            }
+        });
+    }
+
+    restoreAnchors() {
+        this.labels.forEach((label) => {
+            if (label.originalObject3d) {
+                label.object3d = label.originalObject3d;
+                delete label.originalObject3d;
+            }
         });
     }
 
@@ -123,6 +180,8 @@ export class AnatomyLabels {
             this.labels.forEach(l => {
                 l.element.classList.add('hidden');
                 if (l.lineElement) l.lineElement.setAttribute("display", "none");
+                if (l.glowCircleElement) l.glowCircleElement.setAttribute("display", "none");
+                if (l.anchorDotElement) l.anchorDotElement.setAttribute("display", "none");
             });
         } else {
             if (this.isolatedPartKey) {
@@ -131,6 +190,8 @@ export class AnatomyLabels {
                 this.labels.forEach(l => {
                     l.element.classList.remove('hidden');
                     if (l.lineElement) l.lineElement.setAttribute("display", "inline");
+                    if (l.glowCircleElement) l.glowCircleElement.setAttribute("display", "inline");
+                    if (l.anchorDotElement) l.anchorDotElement.setAttribute("display", "inline");
                 });
             }
         }
@@ -140,6 +201,8 @@ export class AnatomyLabels {
         this.labels.forEach(l => {
             l.element.remove();
             if (l.lineElement) l.lineElement.remove();
+            if (l.glowCircleElement) l.glowCircleElement.remove();
+            if (l.anchorDotElement) l.anchorDotElement.remove();
         });
         this.labels = [];
         this.isolatedPartKey = null;
@@ -152,6 +215,7 @@ export class AnatomyLabels {
      * Compute projection offsets inside render loop
      */
     update(trackingActive) {
+
         if (!this.visible || !this.camera || this.labels.length === 0) return;
 
         // Force update the world matrix starting from the root scene to ensure tracking changes propagate fully
@@ -179,6 +243,8 @@ export class AnatomyLabels {
             if (!trackingActive) {
                 label.element.classList.add('hidden');
                 if (label.lineElement) label.lineElement.setAttribute("display", "none");
+                if (label.glowCircleElement) label.glowCircleElement.setAttribute("display", "none");
+                if (label.anchorDotElement) label.anchorDotElement.setAttribute("display", "none");
                 return;
             }
 
@@ -205,13 +271,28 @@ export class AnatomyLabels {
             const tempV = bubbleWorldPos.clone();
             tempV.project(this.camera);
 
+            // Back-face culling check: check if the anchor normal points away from the camera
+            const normalWorld = label.anchorOffset.clone().applyQuaternion(worldQuat).normalize();
+            const dirToCamera = this.camera.position.clone().sub(partWorldPos).normalize();
+            const dot = normalWorld.dot(dirToCamera);
+            
+            // Temporary log to check culling values
+            if (window.logThrottle % 100 === 0) {
+                console.log(`[Culling] ${label.partKey}: dot=${dot.toFixed(4)}, normalWorldZ=${normalWorld.z.toFixed(4)}`);
+            }
+
+            // Hide back-facing anchors when in general overview (not in isolation study mode)
+            const isOccluded = !this.isolatedPartKey && (dot < 0.15);
+
             const isBehindCamera = tempV.z > 1 || partV.z > 1;
             const isOffScreen = tempV.x < -1.1 || tempV.x > 1.1 || tempV.y < -1.1 || tempV.y > 1.1;
             const isOtherPartIsolated = this.isolatedPartKey && label.partKey !== this.isolatedPartKey;
 
-            if (isBehindCamera || isOffScreen || isOtherPartIsolated) {
+            if (isBehindCamera || isOffScreen || isOtherPartIsolated || isOccluded) {
                 label.element.classList.add('hidden');
                 if (label.lineElement) label.lineElement.setAttribute("display", "none");
+                if (label.glowCircleElement) label.glowCircleElement.setAttribute("display", "none");
+                if (label.anchorDotElement) label.anchorDotElement.setAttribute("display", "none");
             } else {
                 // Map standard WebGL coordinates (-1 to +1) to screen pixels
                 const x = (tempV.x * 0.5 + 0.5) * width;
@@ -234,57 +315,130 @@ export class AnatomyLabels {
             }
         });
 
-        // Run screen-space vertical relaxation to prevent label clubbing/overlapping
-        // Width of a label is approx 140px, height is approx 35px.
-        for (let pass = 0; pass < 8; pass++) {
-            for (let i = 0; i < activeLabels.length; i++) {
-                for (let j = 0; j < activeLabels.length; j++) {
-                    if (i === j) continue;
-                    const dx = activeLabels[i].x - activeLabels[j].x;
-                    const dy = activeLabels[i].y - activeLabels[j].y;
-                    const distX = Math.abs(dx);
-                    const distY = Math.abs(dy);
+        // Separate active labels into left and right columns dynamically based on target X coordinate
+        const leftColumn = [];
+        const rightColumn = [];
 
-                    // If they overlap vertically (<38px) and horizontally (<140px)
-                    if (distY < 38 && distX < 140) {
-                        const overlapY = 38 - distY;
-                        const push = overlapY * 0.5;
-                        if (dy >= 0) {
-                            activeLabels[i].y += push;
-                            activeLabels[j].y -= push;
-                        } else {
-                            activeLabels[i].y -= push;
-                            activeLabels[j].y += push;
-                        }
+        activeLabels.forEach((al) => {
+            if (al.px < width / 2) {
+                leftColumn.push(al);
+            } else {
+                rightColumn.push(al);
+            }
+        });
+
+        // Sort each column based on its target Y coordinate on the heart to prevent crossing lines dynamically
+        leftColumn.sort((a, b) => a.py - b.py);
+        rightColumn.sort((a, b) => a.py - b.py);
+
+        // Run vertical relaxation/spacing within each column to prevent overlaps while moving dynamically
+        const minSpacing = 36; // px between adjacent label centers
+
+        const spaceColumn = (column) => {
+            if (column.length === 0) return;
+            
+            // Pass 1: Push down from top to bottom
+            for (let i = 1; i < column.length; i++) {
+                if (column[i].y < column[i - 1].y + minSpacing) {
+                    column[i].y = column[i - 1].y + minSpacing;
+                }
+            }
+
+            // Pass 2: Push up from bottom to top and clamp bottom
+            const maxScaleY = height - 70;
+            if (column[column.length - 1].y > maxScaleY) {
+                column[column.length - 1].y = maxScaleY;
+            }
+            for (let i = column.length - 2; i >= 0; i--) {
+                if (column[i].y > column[i + 1].y - minSpacing) {
+                    column[i].y = column[i + 1].y - minSpacing;
+                }
+            }
+
+            // Pass 3: Clamp top and push down
+            const minScaleY = 70;
+            if (column[0].y < minScaleY) {
+                column[0].y = minScaleY;
+                for (let i = 1; i < column.length; i++) {
+                    if (column[i].y < column[i - 1].y + minSpacing) {
+                        column[i].y = column[i - 1].y + minSpacing;
                     }
                 }
             }
-        }
+        };
+
+        spaceColumn(leftColumn);
+        spaceColumn(rightColumn);
 
         // Apply updated coordinates and draw SVG lines
         this.labels.forEach((label) => {
-            const al = activeLabels.find(item => item.label === label);
+            const leftItem = leftColumn.find(item => item.label === label);
+            const rightItem = rightColumn.find(item => item.label === label);
+            const al = leftItem || rightItem;
+
+            
             if (!al) {
                 // Not active or culled
+                label.element.classList.add('hidden');
+                if (label.lineElement) label.lineElement.setAttribute("display", "none");
+                if (label.glowCircleElement) label.glowCircleElement.setAttribute("display", "none");
+                if (label.anchorDotElement) label.anchorDotElement.setAttribute("display", "none");
                 return;
             }
 
             label.element.classList.remove('hidden');
             if (label.lineElement) label.lineElement.setAttribute("display", "inline");
+            if (label.glowCircleElement) label.glowCircleElement.setAttribute("display", "inline");
+            if (label.anchorDotElement) label.anchorDotElement.setAttribute("display", "inline");
 
-            // Apply screen coordinates to bubble (transform translate(-50%, -100%) places bubble bottom-center at (x, y))
-            label.element.style.transform = `translate(-50%, -100%)`;
-            label.element.style.left = `${al.x}px`;
+            // Calculate precise bubble width dynamically to position line starting point exactly on the dot
+            const bubbleWidth = label.element.offsetWidth || (label.partKey.length * 6 + 40);
+            let lineX = 0;
+
+            if (leftItem) {
+                label.element.classList.add('align-right');
+                label.element.classList.remove('align-left');
+                
+                // Position bubble to the left of the heart target (moving along with it)
+                const x = Math.max(15 + bubbleWidth, al.px - 60);
+                label.element.style.left = `${x - bubbleWidth}px`;
+                label.element.style.right = 'auto';
+                lineX = x;
+            } else {
+                label.element.classList.add('align-left');
+                label.element.classList.remove('align-right');
+                
+                // Position bubble to the right of the heart target (moving along with it)
+                const x = Math.min(width - 15 - bubbleWidth, al.px + 60);
+                label.element.style.left = `${x}px`;
+                label.element.style.right = 'auto';
+                lineX = x;
+            }
+
             label.element.style.top = `${al.y}px`;
             label.element.style.opacity = al.opacity.toString();
 
-            // Draw SVG connection line from bottom-center of bubble to target point on part
+            // Draw SVG connection line from the dot edge of bubble to target point on part
             if (label.lineElement) {
-                label.lineElement.setAttribute("x1", al.x.toString());
+                label.lineElement.setAttribute("x1", lineX.toString());
                 label.lineElement.setAttribute("y1", al.y.toString());
                 label.lineElement.setAttribute("x2", al.px.toString());
                 label.lineElement.setAttribute("y2", al.py.toString());
-                label.lineElement.setAttribute("opacity", (al.opacity * 0.55).toString());
+                label.lineElement.setAttribute("opacity", (al.opacity * 0.9).toString());
+            }
+
+            // Draw SVG outer glow circle on heart target
+            if (label.glowCircleElement) {
+                label.glowCircleElement.setAttribute("cx", al.px.toString());
+                label.glowCircleElement.setAttribute("cy", al.py.toString());
+                label.glowCircleElement.setAttribute("opacity", (al.opacity * 0.35).toString());
+            }
+
+            // Draw SVG inner solid circle on heart target
+            if (label.anchorDotElement) {
+                label.anchorDotElement.setAttribute("cx", al.px.toString());
+                label.anchorDotElement.setAttribute("cy", al.py.toString());
+                label.anchorDotElement.setAttribute("opacity", (al.opacity * 0.9).toString());
             }
         });
     }

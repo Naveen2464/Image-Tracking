@@ -8,6 +8,7 @@
     "start": "npx http-server -c-1 -S -K key.pem -C cert.pem -p 8443"
   },
   "dependencies": {
-    "http-server": "^14.1.1"
+    "http-server": "^14.1.1",
+    "three": "^0.160.0"
   }
 }

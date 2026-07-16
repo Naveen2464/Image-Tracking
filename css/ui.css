@@ -427,9 +427,17 @@
 .ar-billboard-label {
     position: absolute;
     pointer-events: auto;
-    transform: translate(-50%, -100%);
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    transition: opacity 0.3s ease;
     z-index: 10;
+    transform: translateY(-50%);
+}
+
+.ar-billboard-label.align-right .label-bubble {
+    flex-direction: row-reverse;
+}
+
+.ar-billboard-label.align-left .label-bubble {
+    flex-direction: row;
 }
 
 .label-bubble {
@@ -499,5 +507,12 @@
         gap: 8px;
     }
 }
+
+/* Touch-action none on canvas to prevent scroll interference on mobile */
+.ar-viewport canvas {
+    touch-action: none !important;
+}
+
+
 
 

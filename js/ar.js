@@ -57,7 +57,7 @@ export class ARManager {
             webglRenderer.setClearColor(0x000000, 0); // transparent background for camera view
             
             const canvas = webglRenderer.domElement;
-            canvas.setAttribute('style', 'position: absolute; top:0; left:0; width:100%; height:100%;');
+            canvas.setAttribute('style', 'position: absolute; top:0; left:0; width:100%; height:100%; touch-action: none;');
 
             const anchor = this.mindarThree.addAnchor(0);
             this.heartAnchorGroup = anchor.group;
@@ -105,12 +105,16 @@ export class ARManager {
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color(document.body.classList.contains('theme-light') ? 0xf4f8fc : 0x020813);
 
+        const isPortrait = window.innerWidth < window.innerHeight;
+        const cameraDist = isPortrait ? 2.3 : 3.2;
+
         this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-        this.camera.position.set(0, 0, 3.2);
+        this.camera.position.set(0, 0, cameraDist);
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, preserveDrawingBuffer: true });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        this.renderer.domElement.setAttribute('style', 'position: absolute; top:0; left:0; width:100%; height:100%; touch-action: none;');
 
         this.container.appendChild(this.renderer.domElement);
 

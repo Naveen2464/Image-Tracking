@@ -193,36 +193,36 @@ export class AnatomyLoader {
     }
 
     assembleChambers() {
-        // Left Ventricle (Beating) - Offset Left-Down-Forward
+        // Left Ventricle (Beating) - Offset Right-Down-Forward (Anatomical Left)
         const lvGeo = new THREE.SphereGeometry(0.48, 32, 32);
         lvGeo.scale(1, 1.5, 0.95);
         const lv = new THREE.Mesh(lvGeo, this.materials.oxygenated);
-        lv.position.set(-0.25, -1.0, 0.0);
-        this.setupPartData(lv, "left_ventricle", "Left Ventricle", new THREE.Vector3(-0.7, 0.2, 0.4));
+        lv.position.set(0.25, -1.0, 0.0);
+        this.setupPartData(lv, "left_ventricle", "Left Ventricle", new THREE.Vector3(0.7, 0.2, 0.4));
         this.heartGroup.add(lv);
 
-        // Right Ventricle (Beating) - Offset Right-Down-Forward
+        // Right Ventricle (Beating) - Offset Left-Down-Forward (Anatomical Right)
         const rvGeo = new THREE.SphereGeometry(0.44, 32, 32);
         rvGeo.scale(1.1, 1.3, 0.85);
         const rv = new THREE.Mesh(rvGeo, this.materials.deoxygenated);
-        rv.position.set(0.20, -0.9, 0.12);
-        this.setupPartData(rv, "right_ventricle", "Right Ventricle", new THREE.Vector3(0.7, 0.2, 0.4));
+        rv.position.set(-0.20, -0.9, 0.12);
+        this.setupPartData(rv, "right_ventricle", "Right Ventricle", new THREE.Vector3(-0.7, 0.2, 0.4));
         this.heartGroup.add(rv);
 
-        // Left Atrium (Beating) - Offset Left-Up-Back
+        // Left Atrium (Beating) - Offset Right-Up-Back (Anatomical Left)
         const laGeo = new THREE.SphereGeometry(0.32, 32, 32);
         laGeo.scale(1.1, 1.0, 1.1);
         const la = new THREE.Mesh(laGeo, this.materials.oxygenated);
-        la.position.set(-0.24, -0.3, -0.15);
-        this.setupPartData(la, "left_atrium", "Left Atrium", new THREE.Vector3(-0.7, 0.4, -0.3));
+        la.position.set(0.24, -0.3, -0.15);
+        this.setupPartData(la, "left_atrium", "Left Atrium", new THREE.Vector3(0.7, 0.4, -0.3));
         this.heartGroup.add(la);
 
-        // Right Atrium (Beating) - Offset Right-Up-Back
+        // Right Atrium (Beating) - Offset Left-Up-Back (Anatomical Right)
         const raGeo = new THREE.SphereGeometry(0.34, 32, 32);
         raGeo.scale(1.1, 1.1, 1.0);
         const ra = new THREE.Mesh(raGeo, this.materials.deoxygenated);
-        ra.position.set(0.26, -0.25, -0.1);
-        this.setupPartData(ra, "right_atrium", "Right Atrium", new THREE.Vector3(0.7, 0.4, -0.2));
+        ra.position.set(-0.26, -0.25, -0.1);
+        this.setupPartData(ra, "right_atrium", "Right Atrium", new THREE.Vector3(-0.7, 0.4, -0.2));
         this.heartGroup.add(ra);
     }
 
@@ -235,47 +235,47 @@ export class AnatomyLoader {
             this.heartGroup.add(mesh);
         };
 
-        // Aorta - Offset Far Up-Center
+        // Aorta - Offset Far Up-Center (Arches to Anatomical Left / Screen Right)
         const aortaPoints = [
-            new THREE.Vector3(-0.15, -0.6, 0.0),
-            new THREE.Vector3(-0.1, 0.2, 0.1),
-            new THREE.Vector3(-0.08, 0.8, 0.15),
+            new THREE.Vector3(0.15, -0.6, 0.0),
+            new THREE.Vector3(0.1, 0.2, 0.1),
+            new THREE.Vector3(0.08, 0.8, 0.15),
             new THREE.Vector3(0.0, 1.3, 0.0),
-            new THREE.Vector3(0.12, 1.2, -0.3),
-            new THREE.Vector3(0.18, 0.5, -0.6),
-            new THREE.Vector3(0.2, -0.5, -0.7)
+            new THREE.Vector3(-0.12, 1.2, -0.3),
+            new THREE.Vector3(-0.18, 0.5, -0.6),
+            new THREE.Vector3(-0.2, -0.5, -0.7)
         ];
-        buildTube(aortaPoints, 0.12, this.materials.oxygenated, "aorta", "Aorta", new THREE.Vector3(-0.1, 1.7, 0.2));
+        buildTube(aortaPoints, 0.12, this.materials.oxygenated, "aorta", "Aorta", new THREE.Vector3(0.1, 1.7, 0.2));
 
-        // Pulmonary Artery - Offset Left-Up-Forward
+        // Pulmonary Artery - Offset Right-Up-Forward (Anatomical Right / Screen Left)
         const paPoints = [
-            new THREE.Vector3(0.12, -0.5, 0.2),
-            new THREE.Vector3(0.08, 0.0, 0.3),
-            new THREE.Vector3(-0.05, 0.4, 0.4),
-            new THREE.Vector3(-0.4, 0.55, 0.25)
+            new THREE.Vector3(-0.12, -0.5, 0.2),
+            new THREE.Vector3(-0.08, 0.0, 0.3),
+            new THREE.Vector3(0.05, 0.4, 0.4),
+            new THREE.Vector3(0.4, 0.55, 0.25)
         ];
-        buildTube(paPoints, 0.10, this.materials.deoxygenated, "pulmonary_artery", "Pulmonary Artery", new THREE.Vector3(-0.8, 0.7, 0.5));
+        buildTube(paPoints, 0.10, this.materials.deoxygenated, "pulmonary_artery", "Pulmonary Artery", new THREE.Vector3(0.8, 0.7, 0.5));
 
-        // Superior Vena Cava - Offset Right-Far Up-Back
+        // Superior Vena Cava - Offset Left-Far Up-Back (Anatomical Right)
         const svcGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.7, 12);
         const svc = new THREE.Mesh(svcGeo, this.materials.deoxygenated);
-        svc.position.set(0.38, 0.25, -0.2);
-        this.setupPartData(svc, "superior_vena_cava", "Superior Vena Cava", new THREE.Vector3(0.8, 0.6, -0.3));
+        svc.position.set(-0.38, 0.25, -0.2);
+        this.setupPartData(svc, "superior_vena_cava", "SVC", new THREE.Vector3(-0.8, 0.6, -0.3));
         this.heartGroup.add(svc);
 
-        // Inferior Vena Cava - Offset Right-Down-Back
+        // Inferior Vena Cava - Offset Left-Down-Back (Anatomical Right)
         const ivcGeo = new THREE.CylinderGeometry(0.085, 0.085, 0.6, 12);
         const ivc = new THREE.Mesh(ivcGeo, this.materials.deoxygenated);
-        ivc.position.set(0.40, -1.0, -0.3);
-        this.setupPartData(ivc, "inferior_vena_cava", "Inferior Vena Cava", new THREE.Vector3(0.8, -1.3, -0.4));
+        ivc.position.set(-0.40, -1.0, -0.3);
+        this.setupPartData(ivc, "inferior_vena_cava", "IVC", new THREE.Vector3(-0.8, -1.3, -0.4));
         this.heartGroup.add(ivc);
 
-        // Pulmonary Veins (Four small red cylinders) - Offset Left-Down-Back
+        // Pulmonary Veins (Four small red cylinders) - Offset Right-Down-Back (Anatomical Left)
         const pvLocations = [
-            { pos: new THREE.Vector3(-0.7, -0.2, -0.3), rot: [0, 0, 0.4] },
-            { pos: new THREE.Vector3(-0.7, -0.4, -0.25), rot: [0, 0, 0.2] },
-            { pos: new THREE.Vector3(-0.4, -0.1, -0.6), rot: [0.4, 0, -0.2] },
-            { pos: new THREE.Vector3(-0.4, -0.3, -0.6), rot: [0.2, 0, -0.1] }
+            { pos: new THREE.Vector3(0.7, -0.2, -0.3), rot: [0, 0, -0.4] },
+            { pos: new THREE.Vector3(0.7, -0.4, -0.25), rot: [0, 0, -0.2] },
+            { pos: new THREE.Vector3(0.4, -0.1, -0.6), rot: [-0.4, 0, 0.2] },
+            { pos: new THREE.Vector3(0.4, -0.3, -0.6), rot: [-0.2, 0, 0.1] }
         ];
         const pvGeo = new THREE.CylinderGeometry(0.035, 0.035, 0.3, 8);
         pvLocations.forEach((loc, index) => {
@@ -283,7 +283,7 @@ export class AnatomyLoader {
             pv.position.copy(loc.pos);
             pv.rotation.set(loc.rot[0], loc.rot[1], loc.rot[2]);
             if (index === 0) {
-                this.setupPartData(pv, "pulmonary_vein", "Pulmonary Vein", new THREE.Vector3(-0.9, -0.3, -0.3));
+                this.setupPartData(pv, "pulmonary_vein", "Pulmonary Vein", new THREE.Vector3(0.9, -0.3, -0.3));
             }
             this.heartGroup.add(pv);
         });
@@ -301,10 +301,10 @@ export class AnatomyLoader {
         };
 
         // Offset valves inwards but distribute tags clearly
-        createValve(new THREE.Vector3(-0.22, -0.65, -0.05), "mitral_valve", "Mitral Valve", new THREE.Vector3(-0.4, -0.5, 0.3));
-        createValve(new THREE.Vector3(0.21, -0.60, 0.06), "tricuspid_valve", "Tricuspid Valve", new THREE.Vector3(0.4, -0.5, 0.3));
-        createValve(new THREE.Vector3(-0.11, -0.45, 0.05), "aortic_valve", "Aortic Valve", new THREE.Vector3(-0.25, -0.35, 0.35));
-        createValve(new THREE.Vector3(0.08, -0.25, 0.22), "pulmonary_valve", "Pulmonary Valve", new THREE.Vector3(0.25, -0.15, 0.45));
+        createValve(new THREE.Vector3(0.22, -0.65, -0.05), "mitral_valve", "Mitral Valve", new THREE.Vector3(0.4, -0.5, 0.3));
+        createValve(new THREE.Vector3(-0.21, -0.60, 0.06), "tricuspid_valve", "Tricuspid Valve", new THREE.Vector3(-0.4, -0.5, 0.3));
+        createValve(new THREE.Vector3(0.11, -0.45, 0.05), "aortic_valve", "Aortic Valve", new THREE.Vector3(0.25, -0.35, 0.35));
+        createValve(new THREE.Vector3(-0.08, -0.25, 0.22), "pulmonary_valve", "Pulmonary Valve", new THREE.Vector3(-0.25, -0.15, 0.45));
     }
 
     dispose() {
@@ -330,20 +330,31 @@ export class AnatomyLoader {
      */
     mapCustomGLBParts(scene) {
         console.log('Post-processing GLB: Injecting 3D spatial label anchors...');
+        
+        let heartMesh = null;
+        scene.traverse((child) => {
+            if (child.isMesh && !heartMesh) {
+                heartMesh = child;
+            }
+        });
+        
+        const targetNode = heartMesh || scene;
+        console.log('Targeting node for anchors:', targetNode.name || targetNode.type);
+
         const anchors = [
-            { key: "left_ventricle", name: "Left Ventricle", pos: new THREE.Vector3(-0.16, -0.32, 0.1), offset: new THREE.Vector3(-0.6, 0.1, 0.3) },
-            { key: "right_ventricle", name: "Right Ventricle", pos: new THREE.Vector3(0.14, -0.30, 0.15), offset: new THREE.Vector3(0.6, 0.1, 0.3) },
-            { key: "left_atrium", name: "Left Atrium", pos: new THREE.Vector3(-0.14, 0.05, -0.1), offset: new THREE.Vector3(-0.6, 0.2, -0.2) },
-            { key: "right_atrium", name: "Right Atrium", pos: new THREE.Vector3(0.18, 0.08, -0.05), offset: new THREE.Vector3(0.6, 0.2, 0.2) },
-            { key: "aorta", name: "Aorta", pos: new THREE.Vector3(-0.02, 0.38, -0.08), offset: new THREE.Vector3(-0.1, 0.6, 0.2) },
-            { key: "pulmonary_artery", name: "Pulmonary Artery", pos: new THREE.Vector3(-0.08, 0.20, 0.2), offset: new THREE.Vector3(-0.5, 0.35, 0.4) },
-            { key: "superior_vena_cava", name: "Superior Vena Cava", pos: new THREE.Vector3(0.18, 0.28, -0.12), offset: new THREE.Vector3(0.55, 0.35, -0.2) },
-            { key: "inferior_vena_cava", name: "Inferior Vena Cava", pos: new THREE.Vector3(0.20, -0.45, -0.15), offset: new THREE.Vector3(0.55, -0.3, -0.2) },
-            { key: "mitral_valve", name: "Mitral Valve", pos: new THREE.Vector3(-0.15, -0.15, 0.0), offset: new THREE.Vector3(-0.4, -0.5, 0.3) },
-            { key: "tricuspid_valve", name: "Tricuspid Valve", pos: new THREE.Vector3(0.15, -0.12, 0.05), offset: new THREE.Vector3(0.4, -0.5, 0.3) },
-            { key: "aortic_valve", name: "Aortic Valve", pos: new THREE.Vector3(-0.06, 0.02, -0.02), offset: new THREE.Vector3(-0.25, -0.35, 0.35) },
-            { key: "pulmonary_valve", name: "Pulmonary Valve", pos: new THREE.Vector3(-0.04, 0.08, 0.08), offset: new THREE.Vector3(0.25, -0.15, 0.45) },
-            { key: "pulmonary_vein", name: "Pulmonary Vein", pos: new THREE.Vector3(-0.25, -0.05, -0.15), offset: new THREE.Vector3(-0.9, -0.3, -0.3) }
+            { key: "left_ventricle", name: "Left Ventricle", pos: new THREE.Vector3(0.25, -1.0, 0.0), offset: new THREE.Vector3(0.6, 0.1, 0.3) },
+            { key: "right_ventricle", name: "Right Ventricle", pos: new THREE.Vector3(-0.20, -0.9, 0.12), offset: new THREE.Vector3(-0.6, 0.1, 0.3) },
+            { key: "left_atrium", name: "Left Atrium", pos: new THREE.Vector3(0.24, -0.3, -0.15), offset: new THREE.Vector3(0.6, 0.2, -0.2) },
+            { key: "right_atrium", name: "Right Atrium", pos: new THREE.Vector3(-0.26, -0.25, -0.1), offset: new THREE.Vector3(-0.6, 0.2, 0.2) },
+            { key: "aorta", name: "Aorta", pos: new THREE.Vector3(0.02, 1.2, -0.1), offset: new THREE.Vector3(0.1, 0.6, 0.2) },
+            { key: "pulmonary_artery", name: "Pulmonary Artery", pos: new THREE.Vector3(0.15, 0.45, 0.3), offset: new THREE.Vector3(0.5, 0.35, 0.4) },
+            { key: "superior_vena_cava", name: "Superior Vena Cava", pos: new THREE.Vector3(-0.38, 0.25, -0.2), offset: new THREE.Vector3(-0.55, 0.35, -0.2) },
+            { key: "inferior_vena_cava", name: "Inferior Vena Cava", pos: new THREE.Vector3(-0.40, -1.0, -0.3), offset: new THREE.Vector3(-0.55, -0.3, -0.2) },
+            { key: "mitral_valve", name: "Mitral Valve", pos: new THREE.Vector3(0.22, -0.65, -0.05), offset: new THREE.Vector3(0.4, -0.5, 0.3) },
+            { key: "tricuspid_valve", name: "Tricuspid Valve", pos: new THREE.Vector3(-0.21, -0.60, 0.06), offset: new THREE.Vector3(-0.4, -0.5, 0.3) },
+            { key: "aortic_valve", name: "Aortic Valve", pos: new THREE.Vector3(0.11, -0.45, 0.05), offset: new THREE.Vector3(0.25, -0.35, 0.35) },
+            { key: "pulmonary_valve", name: "Pulmonary Valve", pos: new THREE.Vector3(-0.08, -0.25, 0.22), offset: new THREE.Vector3(-0.25, -0.15, 0.45) },
+            { key: "pulmonary_vein", name: "Pulmonary Vein", pos: new THREE.Vector3(0.7, -0.25, -0.3), offset: new THREE.Vector3(0.9, -0.3, -0.3) }
         ];
 
         anchors.forEach((anc) => {
@@ -352,7 +363,7 @@ export class AnatomyLoader {
             anchorObj.name = `anchor_${anc.key}`;
             
             this.setupPartData(anchorObj, anc.key, anc.name, anc.offset);
-            scene.add(anchorObj);
+            targetNode.add(anchorObj);
         });
     }
 }

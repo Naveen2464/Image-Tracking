@@ -39,6 +39,7 @@ class AppOrchestrator {
             this.arManager.renderer,
             (model) => {
                 this.heartModel = model;
+
                 
                 // Hide Loader
                 if (loaderOverlay) {
@@ -168,6 +169,9 @@ class AppOrchestrator {
                 statusPill.textContent = "SIM ACTIVE";
                 statusPill.className = "value status-pill tracking-sim";
             }
+
+            // Initialize gyroscope tilt controls for simulator mode
+            this.initGyroscope();
         });
     }
 
@@ -196,11 +200,11 @@ class AppOrchestrator {
         };
         const displayName = partNames[partKey] || partKey;
 
-        // Try to load dedicated individual GLB file (e.g. assets/aorta.glb)
+        // Try to load dedicated isolated GLB model
         this.loader.loadIsolatedPartModel(
             partKey,
-            (loadedModel) => {
-                // Success: Hide full heart model
+            (isolatedScene) => {
+                // Hide full heart model
                 this.heartModel.visible = false;
 
                 // Clean up any existing isolated model
@@ -209,19 +213,29 @@ class AppOrchestrator {
                     this.disposeModelHierarchy(this.isolatedModel);
                 }
 
-                // Setup and add isolated model to tracking container
-                this.isolatedModel = loadedModel;
-                // Shift the isolated model by the exact same offset as the full heart model to keep it aligned
-                if (this.heartModelCenterOffset) {
-                    this.isolatedModel.position.copy(this.heartModelCenterOffset).multiplyScalar(-1);
-                }
-                this.isolatedModel.scale.set(1.2, 1.2, 1.2);
+                this.isolatedModel = isolatedScene;
+                
+                // Center the isolated model
+                this.centerModel(this.isolatedModel);
+                
+                // Add to model container
                 this.modelContainer.add(this.isolatedModel);
+
+                // Create a temporary anchor object on the isolated model
+                const anchorObj = new THREE.Object3D();
+                anchorObj.position.set(0, 0, 0);
+                anchorObj.name = `anchor_isolated_${partKey}`;
+                isolatedScene.add(anchorObj);
+
+                // Update the active label's target anchor
+                if (this.labels) {
+                    this.labels.updateIsolatedAnchor(partKey, anchorObj);
+                }
 
                 this.finalizeIsolationUI(partKey, displayName);
             },
             (error) => {
-                // Failure / Fallback: Perform sub-mesh visibility filtering on the current heart model
+                console.warn(`Fallback to sub-mesh isolation for ${partKey} due to:`, error);
                 this.applySubMeshIsolation(partKey, displayName);
             }
         );
@@ -302,6 +316,12 @@ class AppOrchestrator {
             this.isolatedModel = null;
         }
 
+        // Clear the illustration image source
+        const imgEl = document.getElementById('isolated-part-image');
+        if (imgEl) {
+            imgEl.src = "";
+        }
+
         // Restore all meshes of the full heart model
         this.heartModel.visible = true;
         this.heartModel.traverse((child) => {
@@ -312,6 +332,7 @@ class AppOrchestrator {
 
         // Restore labels
         if (this.labels) {
+            this.labels.restoreAnchors();
             this.labels.restore();
         }
 
@@ -537,9 +558,71 @@ class AppOrchestrator {
             window.addEventListener('pointercancel', onPointerUp);
         });
     }
+
+    initGyroscope() {
+        const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+        if (!isMobile) return;
+
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+            // iOS 13+ require explicit user gesture to request sensor permissions
+            const btn = document.createElement('button');
+            btn.id = 'btn-gyro-permission';
+            btn.className = 'btn btn-primary';
+            btn.style.position = 'absolute';
+            btn.style.bottom = '85px';
+            btn.style.left = '50%';
+            btn.style.transform = 'translateX(-50%)';
+            btn.style.zIndex = '999';
+            btn.textContent = 'Enable Gyro Tilt';
+            
+            btn.onclick = () => {
+                DeviceOrientationEvent.requestPermission()
+                    .then(response => {
+                        if (response === 'granted') {
+                            window.addEventListener('deviceorientation', (e) => this.handleOrientation(e));
+                            btn.remove();
+                        } else {
+                            triggerUINotification("Gyroscope Access Denied", "warning");
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Gyroscope error:", err);
+                        btn.remove();
+                    });
+            };
+            document.body.appendChild(btn);
+        } else {
+            // Android/Chrome
+            window.addEventListener('deviceorientation', (e) => this.handleOrientation(e));
+        }
+    }
+
+    handleOrientation(e) {
+        if (this.arManager.isARActive) return; // Only run in simulator mode
+        
+        const beta = e.beta;
+        const gamma = e.gamma;
+        
+        if (beta === null || gamma === null) return;
+        
+        // Map tilt angles to rotation limits smoothly.
+        // User naturally holds device at a ~60 degree vertical angle.
+        const targetRotX = ((beta - 60) * Math.PI) / 180;
+        const targetRotY = (gamma * Math.PI) / 180;
+        
+        if (this.modelContainer) {
+            // Smoothly interpolate (lerp) current rotation to target rotation
+            this.modelContainer.rotation.x += (targetRotX - this.modelContainer.rotation.x) * 0.1;
+            this.modelContainer.rotation.y += (targetRotY - this.modelContainer.rotation.y) * 0.1;
+            
+            // Clamp X rotation to avoid flipping upside down
+            this.modelContainer.rotation.x = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, this.modelContainer.rotation.x));
+        }
+    }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    const app = new AppOrchestrator();
-    app.init();
+    window.app = new AppOrchestrator();
+    window.app.init();
 });
+
