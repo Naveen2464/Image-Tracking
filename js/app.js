@@ -186,17 +186,16 @@ class AppOrchestrator {
         const partNames = {
             "left_ventricle": "Left Ventricle",
             "right_ventricle": "Right Ventricle",
-            "left_atrium": "Left Atrium",
-            "right_atrium": "Right Atrium",
             "aorta": "Aorta",
-            "pulmonary_artery": "Pulmonary Artery",
-            "superior_vena_cava": "Superior Vena Cava",
-            "inferior_vena_cava": "Inferior Vena Cava",
-            "mitral_valve": "Mitral Valve",
-            "tricuspid_valve": "Tricuspid Valve",
-            "aortic_valve": "Aortic Valve",
-            "pulmonary_valve": "Pulmonary Valve",
-            "pulmonary_vein": "Pulmonary Veins"
+            "left_auricle": "Left auricle (appendage)",
+            "pulmonary_trunk": "Pulmonary trunk",
+            "pulmonary_semilunar_valve": "Pulmonary (semilunar) valve",
+            "right_atrium": "Right atrium",
+            "tricuspid_valve": "Tricuspid valve",
+            "chordae_tendineae": "Chordae tendineae",
+            "papillary_muscles": "Papillary muscles",
+            "trabeculae_carneae": "Trabeculae carneae",
+            "right_ventricular_wall": "Right ventricular wall"
         };
         const displayName = partNames[partKey] || partKey;
 
@@ -221,15 +220,33 @@ class AppOrchestrator {
                 // Add to model container
                 this.modelContainer.add(this.isolatedModel);
 
-                // Create a temporary anchor object on the isolated model
-                const anchorObj = new THREE.Object3D();
-                anchorObj.position.set(0, 0, 0);
-                anchorObj.name = `anchor_isolated_${partKey}`;
-                isolatedScene.add(anchorObj);
+                 if (partKey === 'left_ventricle') {
+                    // Inject 5 subpart anchors into the isolated scene
+                    this.loader.mapLeftVentricleGLBParts(this.isolatedModel);
+                    
+                    // Re-initialize labels overlay with the isolated scene containing the 5 subparts
+                    if (this.labels) {
+                        this.labels.init(this.isolatedModel, this.arManager.camera, null);
+                    }
+                } else if (partKey === 'right_ventricle') {
+                    // Inject 9 subpart anchors into the isolated scene
+                    this.loader.mapRightVentricleGLBParts(this.isolatedModel);
+                    
+                    // Re-initialize labels overlay with the isolated scene containing the 9 subparts
+                    if (this.labels) {
+                        this.labels.init(this.isolatedModel, this.arManager.camera, null);
+                    }
+                } else {
+                    // Create a temporary anchor object on the isolated model
+                    const anchorObj = new THREE.Object3D();
+                    anchorObj.position.set(0, 0, 0);
+                    anchorObj.name = `anchor_isolated_${partKey}`;
+                    isolatedScene.add(anchorObj);
 
-                // Update the active label's target anchor
-                if (this.labels) {
-                    this.labels.updateIsolatedAnchor(partKey, anchorObj);
+                    // Update the active label's target anchor
+                    if (this.labels) {
+                        this.labels.updateIsolatedAnchor(partKey, anchorObj);
+                    }
                 }
 
                 this.finalizeIsolationUI(partKey, displayName);
@@ -278,8 +295,8 @@ class AppOrchestrator {
             titleEl.textContent = displayName;
         }
 
-        // Hide other labels
-        if (this.labels) {
+        // Hide other labels (only if not left_ventricle/right_ventricle, which need all subparts visible)
+        if (this.labels && partKey !== 'left_ventricle' && partKey !== 'right_ventricle') {
             this.labels.isolate(partKey);
         }
 
@@ -330,10 +347,11 @@ class AppOrchestrator {
             }
         });
 
-        // Restore labels
+        // Restore overview labels
         if (this.labels) {
-            this.labels.restoreAnchors();
-            this.labels.restore();
+            this.labels.init(this.heartModel, this.arManager.camera, (partKey) => {
+                this.enterIsolationMode(partKey);
+            });
         }
 
         // Hide isolation overlay dashboard, show standard guide

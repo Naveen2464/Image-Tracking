@@ -344,23 +344,83 @@ export class AnatomyLoader {
         const anchors = [
             { key: "left_ventricle", name: "Left Ventricle", pos: new THREE.Vector3(0.25, -1.0, 0.0), offset: new THREE.Vector3(0.6, 0.1, 0.3) },
             { key: "right_ventricle", name: "Right Ventricle", pos: new THREE.Vector3(-0.20, -0.9, 0.12), offset: new THREE.Vector3(-0.6, 0.1, 0.3) },
-            { key: "left_atrium", name: "Left Atrium", pos: new THREE.Vector3(0.24, -0.3, -0.15), offset: new THREE.Vector3(0.6, 0.2, -0.2) },
-            { key: "right_atrium", name: "Right Atrium", pos: new THREE.Vector3(-0.26, -0.25, -0.1), offset: new THREE.Vector3(-0.6, 0.2, 0.2) },
-            { key: "aorta", name: "Aorta", pos: new THREE.Vector3(0.02, 1.2, -0.1), offset: new THREE.Vector3(0.1, 0.6, 0.2) },
-            { key: "pulmonary_artery", name: "Pulmonary Artery", pos: new THREE.Vector3(0.15, 0.45, 0.3), offset: new THREE.Vector3(0.5, 0.35, 0.4) },
-            { key: "superior_vena_cava", name: "Superior Vena Cava", pos: new THREE.Vector3(-0.38, 0.25, -0.2), offset: new THREE.Vector3(-0.55, 0.35, -0.2) },
-            { key: "inferior_vena_cava", name: "Inferior Vena Cava", pos: new THREE.Vector3(-0.40, -1.0, -0.3), offset: new THREE.Vector3(-0.55, -0.3, -0.2) },
-            { key: "mitral_valve", name: "Mitral Valve", pos: new THREE.Vector3(0.22, -0.65, -0.05), offset: new THREE.Vector3(0.4, -0.5, 0.3) },
-            { key: "tricuspid_valve", name: "Tricuspid Valve", pos: new THREE.Vector3(-0.21, -0.60, 0.06), offset: new THREE.Vector3(-0.4, -0.5, 0.3) },
-            { key: "aortic_valve", name: "Aortic Valve", pos: new THREE.Vector3(0.11, -0.45, 0.05), offset: new THREE.Vector3(0.25, -0.35, 0.35) },
-            { key: "pulmonary_valve", name: "Pulmonary Valve", pos: new THREE.Vector3(-0.08, -0.25, 0.22), offset: new THREE.Vector3(-0.25, -0.15, 0.45) },
-            { key: "pulmonary_vein", name: "Pulmonary Vein", pos: new THREE.Vector3(0.7, -0.25, -0.3), offset: new THREE.Vector3(0.9, -0.3, -0.3) }
+            { key: "aorta", name: "Aorta", pos: new THREE.Vector3(0.02, 1.2, -0.1), offset: new THREE.Vector3(0.1, 0.6, 0.2) }
         ];
 
         anchors.forEach((anc) => {
             const anchorObj = new THREE.Object3D();
             anchorObj.position.copy(anc.pos);
             anchorObj.name = `anchor_${anc.key}`;
+            
+            this.setupPartData(anchorObj, anc.key, anc.name, anc.offset);
+            targetNode.add(anchorObj);
+        });
+    }
+
+    /**
+     * Post-processes the isolated Left Ventricle GLB to inject anchors for its subparts
+     */
+    mapLeftVentricleGLBParts(scene) {
+        console.log('Post-processing Left Ventricle GLB: Injecting 3D spatial label anchors...');
+        
+        let mesh = null;
+        scene.traverse((child) => {
+            if (child.isMesh && !mesh) {
+                mesh = child;
+            }
+        });
+        
+        const targetNode = mesh || scene;
+
+        const anchors = [
+            { key: "left_auricle", name: "Left auricle (appendage)", pos: new THREE.Vector3(-0.4, 0.35, 0.1), offset: new THREE.Vector3(-0.85, 0.4, 0.2) },
+            { key: "left_atrium", name: "Left atrium", pos: new THREE.Vector3(0.22, 0.38, 0.1), offset: new THREE.Vector3(0.55, 0.5, 0.2) },
+            { key: "pulmonary_vein", name: "Pulmonary veins", pos: new THREE.Vector3(0.56, 0.3, -0.1), offset: new THREE.Vector3(0.9, 0.4, -0.1) },
+            { key: "mitral_valve", name: "Mitral (bicuspid) valve", pos: new THREE.Vector3(0.12, -0.12, 0.2), offset: new THREE.Vector3(0.7, -0.1, 0.3) },
+            { key: "left_ventricle", name: "Left ventricle", pos: new THREE.Vector3(0.35, -0.58, 0.2), offset: new THREE.Vector3(0.65, -0.4, 0.3) }
+        ];
+
+        anchors.forEach((anc) => {
+            const anchorObj = new THREE.Object3D();
+            anchorObj.position.copy(anc.pos);
+            anchorObj.name = `anchor_isolated_${anc.key}`;
+            
+            this.setupPartData(anchorObj, anc.key, anc.name, anc.offset);
+            targetNode.add(anchorObj);
+        });
+    }
+
+    /**
+     * Post-processes the isolated Right Ventricle GLB to inject anchors for its subparts
+     */
+    mapRightVentricleGLBParts(scene) {
+        console.log('Post-processing Right Ventricle GLB: Injecting 3D spatial label anchors...');
+        
+        let mesh = null;
+        scene.traverse((child) => {
+            if (child.isMesh && !mesh) {
+                mesh = child;
+            }
+        });
+        
+        const targetNode = mesh || scene;
+
+        const anchors = [
+            { key: "pulmonary_trunk", name: "Pulmonary trunk", pos: new THREE.Vector3(0.08, 0.65, 0.1), offset: new THREE.Vector3(0.65, 0.65, 0.1) },
+            { key: "pulmonary_semilunar_valve", name: "Pulmonary (semilunar) valve", pos: new THREE.Vector3(0.05, 0.44, 0.25), offset: new THREE.Vector3(0.65, 0.4, 0.25) },
+            { key: "right_atrium", name: "Right atrium", pos: new THREE.Vector3(-0.45, 0.4, 0.1), offset: new THREE.Vector3(-0.85, 0.4, 0.1) },
+            { key: "tricuspid_valve", name: "Tricuspid valve", pos: new THREE.Vector3(-0.35, -0.1, 0.2), offset: new THREE.Vector3(-0.85, -0.1, 0.2) },
+            { key: "chordae_tendineae", name: "Chordae tendineae", pos: new THREE.Vector3(-0.25, -0.28, 0.25), offset: new THREE.Vector3(-0.85, -0.28, 0.25) },
+            { key: "papillary_muscles", name: "Papillary muscles", pos: new THREE.Vector3(-0.24, -0.44, 0.25), offset: new THREE.Vector3(-0.85, -0.44, 0.25) },
+            { key: "trabeculae_carneae", name: "Trabeculae carneae", pos: new THREE.Vector3(-0.15, -0.65, 0.2), offset: new THREE.Vector3(-0.7, -0.65, 0.2) },
+            { key: "right_ventricle", name: "Right ventricle", pos: new THREE.Vector3(0.3, -0.25, 0.2), offset: new THREE.Vector3(0.7, -0.25, 0.2) },
+            { key: "right_ventricular_wall", name: "Right ventricular wall", pos: new THREE.Vector3(0.48, -0.72, 0.1), offset: new THREE.Vector3(0.7, -0.72, 0.1) }
+        ];
+
+        anchors.forEach((anc) => {
+            const anchorObj = new THREE.Object3D();
+            anchorObj.position.copy(anc.pos);
+            anchorObj.name = `anchor_isolated_${anc.key}`;
             
             this.setupPartData(anchorObj, anc.key, anc.name, anc.offset);
             targetNode.add(anchorObj);

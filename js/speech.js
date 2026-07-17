@@ -21,7 +21,14 @@ export class ClinicalSpeechManager {
             "tricuspid_valve": "The Tricuspid Valve prevents blood from flowing backward from the right ventricle into the right atrium.",
             "aortic_valve": "The Aortic Valve prevents blood from flowing backward from the aorta into the left ventricle.",
             "pulmonary_valve": "The Pulmonary Valve prevents blood from flowing backward from the pulmonary artery into the right ventricle.",
-            "pulmonary_vein": "The Pulmonary Veins carry oxygen-rich blood from the lungs back to the left atrium of the heart."
+            "pulmonary_vein": "The Pulmonary Veins carry oxygen-rich blood from the lungs back to the left atrium of the heart.",
+            "left_auricle": "The Left Auricle, or left atrial appendage, is a small, muscular pouch-like extension of the left atrium that acts as a reservoir.",
+            "pulmonary_trunk": "The Pulmonary Trunk is a major vessel that branches into the right and left pulmonary arteries to carry deoxygenated blood to the lungs.",
+            "pulmonary_semilunar_valve": "The Pulmonary Semilunar Valve regulates blood flow from the right ventricle into the pulmonary trunk, preventing backflow.",
+            "chordae_tendineae": "The Chordae Tendineae, or heart strings, are fibrous cords that connect the papillary muscles to the tricuspid valve leaflets to keep them closed under pressure.",
+            "papillary_muscles": "The Papillary Muscles contract to pull on the chordae tendineae, preventing inversion of the tricuspid valve during ventricular contraction.",
+            "trabeculae_carneae": "The Trabeculae Carneae are muscular ridges on the internal walls of the ventricles that prevent suction and assist in efficient pumping.",
+            "right_ventricular_wall": "The Right Ventricular Wall is the outer muscular boundary of the right ventricle, designed to pump blood under low pressure to the pulmonary system."
         };
 
         // Preload voices (Web Speech API requires this to populating voices list on some browsers)
