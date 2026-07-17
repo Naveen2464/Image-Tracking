@@ -195,7 +195,15 @@ class AppOrchestrator {
             "chordae_tendineae": "Chordae tendineae",
             "papillary_muscles": "Papillary muscles",
             "trabeculae_carneae": "Trabeculae carneae",
-            "right_ventricular_wall": "Right ventricular wall"
+            "right_ventricular_wall": "Right ventricular wall",
+            "brachiocephalic_artery": "Brachiocephalic artery",
+            "ascending_aorta": "Ascending aorta",
+            "aortic_root": "Aortic root",
+            "left_common_carotid_artery": "Left common carotid artery",
+            "left_subclavian_artery": "Left subclavian artery",
+            "aortic_arch": "Aortic arch",
+            "descending_thoracic_aorta": "Descending thoracic aorta",
+            "abdominal_aorta": "Abdominal aorta"
         };
         const displayName = partNames[partKey] || partKey;
 
@@ -220,7 +228,7 @@ class AppOrchestrator {
                 // Add to model container
                 this.modelContainer.add(this.isolatedModel);
 
-                 if (partKey === 'left_ventricle') {
+                  if (partKey === 'left_ventricle') {
                     // Inject 5 subpart anchors into the isolated scene
                     this.loader.mapLeftVentricleGLBParts(this.isolatedModel);
                     
@@ -233,6 +241,14 @@ class AppOrchestrator {
                     this.loader.mapRightVentricleGLBParts(this.isolatedModel);
                     
                     // Re-initialize labels overlay with the isolated scene containing the 9 subparts
+                    if (this.labels) {
+                        this.labels.init(this.isolatedModel, this.arManager.camera, null);
+                    }
+                } else if (partKey === 'aorta') {
+                    // Inject 8 subpart anchors into the isolated scene
+                    this.loader.mapAortaGLBParts(this.isolatedModel);
+                    
+                    // Re-initialize labels overlay with the isolated scene containing the 8 subparts
                     if (this.labels) {
                         this.labels.init(this.isolatedModel, this.arManager.camera, null);
                     }
@@ -295,8 +311,8 @@ class AppOrchestrator {
             titleEl.textContent = displayName;
         }
 
-        // Hide other labels (only if not left_ventricle/right_ventricle, which need all subparts visible)
-        if (this.labels && partKey !== 'left_ventricle' && partKey !== 'right_ventricle') {
+        // Hide other labels (only if not left_ventricle/right_ventricle/aorta, which need all subparts visible)
+        if (this.labels && partKey !== 'left_ventricle' && partKey !== 'right_ventricle' && partKey !== 'aorta') {
             this.labels.isolate(partKey);
         }
 

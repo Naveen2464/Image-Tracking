@@ -1,35 +1,81 @@
-# 3D Heart Anatomy Image Tracking WebAR System
+# CardioSense AR: 3D Heart Anatomy Image Tracking WebAR System
 
-A state-of-the-art, interactive, clinical-grade medical Augmented Reality (WebAR) dashboard demonstrating human heart anatomy, cardiac hemodynamics (blood flow), and pathology simulations. Built using pure front-end WebGL technologies (Three.js and MindAR) with complete responsive browser support.
+CardioSense AR is a state-of-the-art, interactive, clinical-grade medical Augmented Reality (WebAR) dashboard demonstrating human heart anatomy, cardiac hemodynamics (blood flow), and pathology simulations. Built using pure front-end WebGL technologies (Three.js and MindAR) with complete responsive browser support.
 
 ---
 
 ## Project Overview
 
-**CardioSense AR** is a production-ready WebXR-compatible application designed to run entirely in modern mobile and desktop web browsers without external installations. It delivers:
+CardioSense AR runs entirely in modern mobile and desktop web browsers without external software installations. It delivers:
 - **Marker-Based Augmented Reality**: Utilizes **MindAR.js** to track a reference target card and anchor a complex 3D heart in real space.
-- **Desktop/Mobile Touch Simulator**: Automatically falls back to a 3D orbit viewer when camera streams are unavailable or permissions are denied.
+- **Desktop/Mobile Touch Simulator**: Automatically falls back to a 3D orbit viewer when camera streams are unavailable or camera permissions are denied.
+- **Anatomy Isolation Modes**: Allows medical students to isolate and inspect the three main parts of the heart, rendering a total of **22 interactive anatomical subparts** with detailed descriptions.
+- **Dynamic Target Tracking Labels**: Text overlays dynamically track the rotating model, automatically switching sides and layout relaxation to prevent overlaps.
 - **Double-Pump Contraction Physics**: Programmatically deforms heart muscle geometry to simulate atrial systole followed by ventricular contraction.
-- **Interactive Multi-lingual Voice Assistant**: Integrates the **Web Speech API** to read out complex clinical data and interesting facts in English, Hindi, and Kannada.
+- **Interactive Multi-lingual Voice Assistant**: Integrates the **Web Speech API** to read out complex clinical data and descriptions in English, Hindi, and Kannada.
 - **Dynamic Synthesized Audio**: Synthesizes organic *lub-dub* heartbeats in real-time matching the BPM slider using the **Web Audio API**.
 
 ---
 
 ## Technical Features
 
-1. **Precision 3D Geometry Representation**: Programmatically renders **13 distinct anatomical components**:
-   - Chambers: Left/Right Ventricle, Left/Right Atrium.
-   - Major Vessels: Aorta, Pulmonary Artery, Pulmonary Veins, Superior/Inferior Vena Cava.
-   - Valves: Mitral, Tricuspid, Aortic, Pulmonary Valves.
-2. **Glassmorphism Medical Dashboard UI**: Modern responsive design using custom CSS variables (Dark/Light themes), frosted background blur effects, and clinical telemetry statistics (FPS monitoring, AR tracking status).
-3. **Cardiovascular Pathology Simulation (5 Cardiac States)**:
-   - **Coronary Artery Disease (CAD)**: Visualizes clogged pathways on the coronary artery meshes and slows blood flow speeds.
-   - **Myocardial Infarction (Heart Attack)**: Darkens the Left Ventricle wall (ischemic dead tissue) and halts contraction movements.
-   - **Valvular Heart Disease (Stenosis)**: Colors valves yellow/calcified and constricts their opening clearances.
-   - **Dilated Cardiomyopathy**: Expands the heart scale (dilated state) and weakens pumping deformations.
-   - **Cardiac Arrhythmia**: Irregular rhythm cycles containing PVC (premature ventricular contractions) spikes.
-4. **Hemodynamics Particle Flow**: Staggers oxygenated (red) and deoxygenated (blue) particles flowing along bezier spline vectors representing blood direction.
-5. **Billboarding 2D Labels**: Projects 3D node endpoints onto screen space coordinates, keeping text overlays centered above the rotating model.
+### 1. Primary Heart Overview
+The main heart model features **3 primary interactive components**:
+*   **Aorta**: The main artery carrying oxygenated blood from the heart to the rest of the body.
+*   **Left Ventricle**: The thickest pumping chamber responsible for pushing blood into systemic circulation.
+*   **Right Ventricle**: The pumping chamber responsible for pushing deoxygenated blood into the lungs.
+
+---
+
+### 2. Isolated Anatomical Subpart Mappings
+When a primary component is selected, the application transitions into isolated anatomical study view and loads its dedicated GLB asset, exposing its detailed sub-structure:
+
+#### A. Isolated Aorta (`aorta.glb` — 8 subparts)
+1.  **Brachiocephalic artery** — First branch of the aortic arch, carrying blood to the head, neck, and right arm.
+2.  **Left common carotid artery** — Second branch of the aortic arch, supplying blood to the left side of the head and neck.
+3.  **Left subclavian artery** — Third branch of the aortic arch, distributing blood to the left arm.
+4.  **Ascending aorta** — Portion of the aorta starting from the aortic valve and rising to the aortic arch.
+5.  **Aortic arch** — Curved segment of the aorta looping over the heart.
+6.  **Aortic root** — Section of the aorta attached to the heart, containing the aortic valve.
+7.  **Descending thoracic aorta** — Part of the aorta running down through the chest cavity.
+8.  **Abdominal aorta** — Final segment of the aorta running through the abdominal cavity.
+
+#### B. Isolated Left Ventricle (`left_ventricle.glb` — 5 subparts)
+1.  **Left auricle (appendage)** — Muscular pouch-like extension acting as a reservoir.
+2.  **Left atrium** — Chamber receiving oxygenated blood from the lungs.
+3.  **Pulmonary veins** — Vessels carrying oxygenated blood from the lungs back to the left atrium.
+4.  **Mitral (bicuspid) valve** — Prevents blood backflow from the left ventricle into the left atrium.
+5.  **Left ventricle** — Pumping cavity driving systemic circulation.
+
+#### C. Isolated Right Ventricle (`right_ventricle.glb` — 9 subparts)
+1.  **Pulmonary trunk** — Major vessel branching to carry deoxygenated blood to the lungs.
+2.  **Pulmonary (semilunar) valve** — Regulates blood flow from the right ventricle into the pulmonary trunk.
+3.  **Right atrium** — Chamber receiving deoxygenated blood from the body.
+4.  **Tricuspid valve** — Prevents blood backflow from the right ventricle into the right atrium.
+5.  **Chordae tendineae** — Heart strings connecting papillary muscles to valve leaflets.
+6.  **Papillary muscles** — Contract to pull on chordae tendineae during ventricular contraction.
+7.  **Trabeculae carneae** — Muscular ridges preventing suction on ventricle walls.
+8.  **Right ventricle** — Pumping cavity driving pulmonary circulation.
+9.  **Right ventricular wall** — Outer muscular boundary pumping blood under low pressure to the lungs.
+
+---
+
+### 3. Glassmorphism Medical Dashboard UI
+Modern responsive design using custom CSS variables (Dark/Light themes), frosted background blur effects, and clinical telemetry statistics (FPS monitoring, AR tracking status).
+
+---
+
+### 4. Cardiovascular Pathology Simulation (5 Cardiac States)
+*   **Coronary Artery Disease (CAD)**: Visualizes clogged pathways on the coronary artery meshes and slows blood flow speeds.
+*   **Myocardial Infarction (Heart Attack)**: Darkens the Left Ventricle wall (ischemic dead tissue) and halts contraction movements.
+*   **Valvular Heart Disease (Stenosis)**: Colors valves yellow/calcified and constricts their opening clearances.
+*   **Dilated Cardiomyopathy**: Expands the heart scale (dilated state) and weakens pumping deformations.
+*   **Cardiac Arrhythmia**: Irregular rhythm cycles containing PVC (premature ventricular contractions) spikes.
+
+---
+
+### 5. Hemodynamics Particle Flow
+Staggers oxygenated (red) and deoxygenated (blue) particles flowing along bezier spline vectors representing blood direction.
 
 ---
 
@@ -52,21 +98,20 @@ image_tracking/
 ├── js/
 │   ├── app.js               # App orchestrator & click Raycaster intersections
 │   ├── ar.js                # MindAR tracking wrappers & OrbitControls fallbacks
-│   ├── speech.js            # Voice synthesizer data (EN, HI, KN)
+│   ├── speech.js            # Voice synthesizer descriptions (EN, HI, KN)
 │   ├── animation.js         # Beating physics & blood flow paths
-│   ├── labels.js            # Projected billboard label overlays
-│   ├── loader.js            # Custom GLTF parser and procedural generator
+│   ├── labels.js            # Projected billboard label overlays (dynamic)
+│   ├── loader.js            # GLTF loader and procedural coordinate injector
 │   ├── fallback_assets.js   # Procedural geometry fallback assets
-│   └── utils.js             # Web Audio synth, FPS counters, screenshots
+│   └── utils.js             # Web Audio heartbeat synth, FPS counters, screenshots
 │
 ├── assets/
 │   ├── target.mind          # Compiled MindAR image feature pattern database
 │   ├── card.png             # Visual target reference card for testing
-│   ├── heart.glb            # Full heart 3D model (GLTF binary)
-│   ├── aorta.glb            # Aorta 3D model
-│   ├── left_ventricle.glb   # Left ventricle 3D model
-│   ├── right_ventricle.glb  # Right ventricle 3D model
-│   └── parts/               # Additional anatomy part models
+│   ├── heart.glb            # Full heart 3D model overview
+│   ├── aorta.glb            # Isolated Aorta 3D model
+│   ├── left_ventricle.glb   # Isolated Left Ventricle 3D model
+│   └── right_ventricle.glb  # Isolated Right Ventricle 3D model
 │
 ├── fonts/                   # Custom web fonts
 ├── icons/                   # UI icon assets
@@ -93,119 +138,44 @@ Before running the project, ensure you have the following installed:
 No build tools or compilers are required. The project is built entirely on ES Modules.
 
 ### Step 1 — Clone or Place the Workspace Files
-
-Clone the repository or download and unzip it so your folder structure matches the layout shown above:
-
+Place the project folder anywhere on your system and navigate into it:
 ```bash
-git clone https://github.com/your-username/image_tracking.git
 cd image_tracking
 ```
 
-Or simply place the project folder anywhere on your system and navigate into it.
-
----
-
 ### Step 2 — Install Dependencies
-
 Install the required Node packages (includes `http-server`):
-
 ```bash
 npm install
 ```
 
-> This reads `package.json` and installs everything into `node_modules/`. Only needed once.
-
----
-
 ### Step 3 — Launch the Local HTTPS Server
-
-The project is pre-configured with SSL certificates. Use one of the following methods:
-
-#### ✅ Method A — Using npm (Recommended)
-
-```bash
-npm start
-```
-
-or equivalently:
-
+The project is pre-configured with SSL certificates. Use the recommended npm script:
 ```bash
 npm run dev
 ```
-
-This runs the following command internally (as defined in `package.json`):
-
+This runs the HTTPS server internally:
 ```bash
 npx http-server -c-1 -S -K key.pem -C cert.pem -p 8443
 ```
-
-| Flag | Meaning |
-|------|---------|
-| `-c-1` | Disables caching (always serves fresh files) |
-| `-S` | Enables HTTPS/SSL mode |
-| `-K key.pem` | Path to SSL private key |
-| `-C cert.pem` | Path to SSL certificate |
-| `-p 8443` | Port to listen on |
-
-#### ✅ Method B — Using npx directly (No install needed)
-
-```bash
-npx http-server -c-1 -S -K key.pem -C cert.pem -p 8443
-```
-
-#### ✅ Method C — Plain HTTP (Desktop only, camera may not work)
-
-If you only need to test the 3D viewer without AR camera features:
-
-```bash
-npx http-server -c-1 -p 8080
-```
-
-> ⚠️ Camera access will be **blocked** in plain HTTP mode on most browsers. Use HTTPS methods above for full AR functionality.
-
-#### ✅ Method D — Python (Plain HTTP, Desktop only)
-
-```bash
-# Python 3
-python -m http.server 8000
-```
-
-> ⚠️ Same limitation as Method C — camera access requires HTTPS.
-
----
 
 ### Step 4 — Open in Browser
-
 #### Desktop
-
 Open your browser and navigate to:
-
 ```
 https://localhost:8443
 ```
-
-> **Self-signed certificate warning**: Your browser will show a security warning because the SSL certificate is self-signed (not issued by a public CA). This is **safe for local development**.
-> - **Chrome / Edge**: Click **Advanced** → **Proceed to localhost (unsafe)**
-> - **Firefox**: Click **Advanced** → **Accept the Risk and Continue**
-> - **Safari**: Click **Show Details** → **visit this website**
+*Note: Your browser will show a security warning because the SSL certificate is self-signed. Click **Advanced** → **Proceed to localhost (unsafe)**.*
 
 #### Mobile Testing
-
 To test AR on a real phone camera:
-
-1. Find your computer's local IP address:
-   - **Windows**: Open Command Prompt → run `ipconfig` → look for `IPv4 Address` (e.g., `192.168.1.50`)
-   - **Mac/Linux**: Run `ifconfig` or `ip addr` in Terminal
-
-2. On your phone browser, navigate to:
+1. Ensure both your computer and phone are connected to the same Wi-Fi network.
+2. Find your computer's local IP address (e.g. `192.168.1.50`).
+3. On your phone browser, navigate to:
    ```
    https://192.168.1.50:8443
    ```
-   *(Replace `192.168.1.50` with your actual local IP)*
-
-3. Accept the self-signed certificate warning on your phone (same steps as desktop above).
-
-4. Ensure **both your computer and phone are connected to the same Wi-Fi network**.
+4. Bypass the certificate warning as described above.
 
 ---
 
@@ -213,69 +183,12 @@ To test AR on a real phone camera:
 
 To test the Augmented Reality tracking:
 1. Click the **"Target Image"** button on the toolbar of the dashboard.
-2. A modal will open displaying the target card (`assets/card.png`).
-3. Print the card or display it on a second screen.
-4. Position your webcam or hold your mobile device camera to scan this card.
-5. The 3D anatomical heart will immediately anchor to the card.
-6. **Alternative**: If you don't have a camera, click **"Open Desktop Simulator"** in the error prompts to rotate and test the model in desktop mode immediately.
-
----
-
-## Customization Guide
-
-### Altering the 3D Heart Model
-To load a custom 3D model instead of the procedural generator, replace `assets/heart.glb` with your custom GLB. The `loader.js` class will automatically load it. Ensure your custom model contains child meshes named after the keys in `ANATOMY_DATABASE` if you want clicks and descriptions to match!
-
-### Modifying Heartbeat Frequencies
-To adjust frequency properties of the Audio synth, open `js/utils.js` and modify the parameters in `playLubDub()`. You can adjust the frequencies of oscillators:
-```javascript
-// Change pitch of the LUB sound
-this.synthesizeTone(58, 42, 0.12, now, 0.35); // (Start freq, End freq, duration, time, volume)
-```
-
----
-
-## Dependencies
-
-The project loads standard CDN dependencies via import maps:
-
-| Library | Version | Purpose |
-|---------|---------|---------|
-| **Three.js** | v0.160.0 | WebGL 3D graphics rendering |
-| **MindAR-image-three** | v1.2.5 | Computer vision image tracking |
-| **OrbitControls.js** | (Three.js add-on) | Desktop orbit / drag controls |
-| **GLTFLoader.js** | (Three.js add-on) | Loading `.glb` / `.gltf` 3D models |
-
-Local Node dependency (for the dev server):
-
-| Package | Version | Purpose |
-|---------|---------|---------|
-| **http-server** | ^14.1.1 | Local HTTPS static file server |
-| **three** | ^0.160.0 | Three.js (also used via CDN) |
-
----
-
-## Troubleshooting
-
-| Problem | Solution |
-|---------|---------|
-| Camera not working | Ensure you are on HTTPS (`https://localhost:8443`), not plain HTTP |
-| Browser shows "Not Secure" warning | Click **Advanced → Proceed** — this is expected for self-signed certs |
-| Port 8443 already in use | Change the `-p` value in `package.json` scripts to another port |
-| `npm install` fails | Ensure Node.js v14+ is installed: run `node -v` to verify |
-| AR model not appearing | Hold the target card flat and well-lit; ensure camera permission is granted |
-| Mobile cannot connect | Verify both devices are on the same Wi-Fi; use your PC's IPv4 address |
+2. Scan the displayed card (`assets/card.png`) with your webcam or phone.
+3. The 3D anatomical heart will immediately anchor to the card.
+4. **Alternative**: If you don't have a camera, click **"Enter Simulator Mode"** on the dashboard target modal to rotate and test the model in desktop mode immediately.
 
 ---
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE details for info.
-
----
-
-## Future Scope
-
-1. **Physics-based Valve Flow Simulations**: Add fluid dynamics shaders inside the chambers to show true vortex formations of blood.
-2. **Volumetric CT Scan Import**: Allow medical students to drag and drop DICOM CT scans of patient hearts and generate custom tracking meshes dynamically.
-3. **WebXR Headset Integration**: Incorporate Apple Vision Pro or Meta Quest controllers to explore the heart in absolute VR immersion.
+This project is licensed under the MIT License.

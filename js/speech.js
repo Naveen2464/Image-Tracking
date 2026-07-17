@@ -28,7 +28,15 @@ export class ClinicalSpeechManager {
             "chordae_tendineae": "The Chordae Tendineae, or heart strings, are fibrous cords that connect the papillary muscles to the tricuspid valve leaflets to keep them closed under pressure.",
             "papillary_muscles": "The Papillary Muscles contract to pull on the chordae tendineae, preventing inversion of the tricuspid valve during ventricular contraction.",
             "trabeculae_carneae": "The Trabeculae Carneae are muscular ridges on the internal walls of the ventricles that prevent suction and assist in efficient pumping.",
-            "right_ventricular_wall": "The Right Ventricular Wall is the outer muscular boundary of the right ventricle, designed to pump blood under low pressure to the pulmonary system."
+            "right_ventricular_wall": "The Right Ventricular Wall is the outer muscular boundary of the right ventricle, designed to pump blood under low pressure to the pulmonary system.",
+            "brachiocephalic_artery": "The Brachiocephalic Artery is the first branch of the aortic arch, carrying blood to the head, neck, and right arm.",
+            "ascending_aorta": "The Ascending Aorta is the portion of the aorta that starts from the aortic valve and rises up to the aortic arch.",
+            "aortic_root": "The Aortic Root is the section of the aorta attached to the heart, containing the aortic valve and opening to the coronary arteries.",
+            "left_common_carotid_artery": "The Left Common Carotid Artery is the second branch of the aortic arch, supplying blood to the left side of the head and neck.",
+            "left_subclavian_artery": "The Left Subclavian Artery is the third branch of the aortic arch, distributing blood to the left arm.",
+            "aortic_arch": "The Aortic Arch is the curved segment of the aorta that loops over the heart and gives rise to major upper-body arteries.",
+            "descending_thoracic_aorta": "The Descending Thoracic Aorta is the part of the aorta that runs down through the chest cavity before reaching the abdomen.",
+            "abdominal_aorta": "The Abdominal Aorta is the final segment of the aorta that runs through the abdominal cavity, supplying oxygenated blood to lower body systems."
         };
 
         // Preload voices (Web Speech API requires this to populating voices list on some browsers)

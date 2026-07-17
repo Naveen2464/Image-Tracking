@@ -426,4 +426,40 @@ export class AnatomyLoader {
             targetNode.add(anchorObj);
         });
     }
+
+    /**
+     * Post-processes the isolated Aorta GLB to inject anchors for its subparts
+     */
+    mapAortaGLBParts(scene) {
+        console.log('Post-processing Aorta GLB: Injecting 3D spatial label anchors...');
+        
+        let mesh = null;
+        scene.traverse((child) => {
+            if (child.isMesh && !mesh) {
+                mesh = child;
+            }
+        });
+        
+        const targetNode = mesh || scene;
+
+        const anchors = [
+            { key: "brachiocephalic_artery", name: "Brachiocephalic artery", pos: new THREE.Vector3(-0.24, 0.95, -0.28), offset: new THREE.Vector3(0.45, 0.0, 0.1) },
+            { key: "left_common_carotid_artery", name: "Left common carotid artery", pos: new THREE.Vector3(0.02, 0.92, -0.18), offset: new THREE.Vector3(0.0, 0.25, 0.1) },
+            { key: "left_subclavian_artery", name: "Left subclavian artery", pos: new THREE.Vector3(0.20, 0.80, -0.30), offset: new THREE.Vector3(-0.45, 0.0, 0.1) },
+            { key: "ascending_aorta", name: "Ascending aorta", pos: new THREE.Vector3(-0.32, 0.27, 0.15), offset: new THREE.Vector3(0.45, 0.0, 0.1) },
+            { key: "aortic_arch", name: "Aortic arch", pos: new THREE.Vector3(0.00, 0.39, -0.21), offset: new THREE.Vector3(0.45, 0.0, 0.1) },
+            { key: "aortic_root", name: "Aortic root", pos: new THREE.Vector3(-0.28, -0.09, 0.28), offset: new THREE.Vector3(0.45, 0.0, 0.1) },
+            { key: "descending_thoracic_aorta", name: "Descending thoracic aorta", pos: new THREE.Vector3(0.32, -0.10, -0.21), offset: new THREE.Vector3(-0.45, 0.0, 0.1) },
+            { key: "abdominal_aorta", name: "Abdominal aorta", pos: new THREE.Vector3(0.18, -0.90, -0.23), offset: new THREE.Vector3(-0.45, 0.0, 0.1) }
+        ];
+
+        anchors.forEach((anc) => {
+            const anchorObj = new THREE.Object3D();
+            anchorObj.position.copy(anc.pos);
+            anchorObj.name = `anchor_isolated_${anc.key}`;
+            
+            this.setupPartData(anchorObj, anc.key, anc.name, anc.offset);
+            targetNode.add(anchorObj);
+        });
+    }
 }

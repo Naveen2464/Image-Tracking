@@ -282,7 +282,8 @@ export class AnatomyLabels {
             }
 
             // Hide back-facing anchors when in general overview (not in isolation study mode)
-            const isOccluded = !this.isolatedPartKey && (dot < 0.15);
+            const isIsolationMode = !this.onClickCallback;
+            const isOccluded = !isIsolationMode && (dot < 0.15);
 
             const isBehindCamera = tempV.z > 1 || partV.z > 1;
             const isOffScreen = tempV.x < -1.1 || tempV.x > 1.1 || tempV.y < -1.1 || tempV.y > 1.1;
@@ -376,7 +377,6 @@ export class AnatomyLabels {
             const rightItem = rightColumn.find(item => item.label === label);
             const al = leftItem || rightItem;
 
-            
             if (!al) {
                 // Not active or culled
                 label.element.classList.add('hidden');
